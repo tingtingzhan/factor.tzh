@@ -2,7 +2,6 @@ Package: factor.tzh
 Type: Package
 Title: Tingting's extension of factor object
 Version: 0.1.3
-Date: 2025-04-28
 Description: Tingting's extension of factor object.
 License: GPL-2
 Encoding: UTF-8
