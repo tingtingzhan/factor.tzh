@@ -2,20 +2,15 @@
 % Please edit documentation in R/cut_.R
 \name{cut_}
 \alias{cut_}
-\alias{cut_levels}
 \title{Divide Numeric Into Intervals}
 \usage{
 cut_(
   x,
-  breaks = quantile(x, probs = break_probs, na.rm = TRUE),
-  break_probs,
-  right = TRUE,
-  include.lowest = TRUE,
+  breaks = quantile(x, probs = probs, na.rm = TRUE),
+  probs,
   data.name = substitute(x),
   ...
 )
-
-cut_levels(breaks, right = TRUE, include.lowest = TRUE, data.name = "x")
 }
 \arguments{
 \item{x}{\link[base]{integer}, \link[base]{numeric}, \link[base]{difftime}, \link[base]{Date},
@@ -24,20 +19,15 @@ cut_levels(breaks, right = TRUE, include.lowest = TRUE, data.name = "x")
 \item{breaks}{\link[base]{vector} of the same \link[base]{class} as \code{x}.
 \code{-Inf} and \code{Inf} will be automatically added}
 
-\item{break_probs}{\link[base]{double} \link[base]{vector} from 0 to 1,
+\item{probs}{\link[base]{double} \link[base]{vector} from 0 to 1,
 probabilities to specify the \link[stats]{quantile}s to be used as \code{breaks}}
-
-\item{right}{\link[base]{logical} scalar, default \code{TRUE},
-see functions \link[base]{cut.default} and \link[base]{.bincode}.}
-
-\item{include.lowest}{\link[base]{logical} scalar, default \code{TRUE},
-see functions \link[base]{cut.default} and \link[base]{.bincode}.}
 
 \item{data.name}{\link[base]{character} scalar, name of data.
 R \link[base]{language} is also accepted.
 Default is the argument call of \code{x}}
 
-\item{...}{additional parameters, currently not in use}
+\item{...}{additional parameters \code{right} and \code{include.lowest} of
+functions \link[base]{cut.default} and \link[base]{.bincode}.}
 }
 \description{
 Divide numeric into intervals; an alternative to function \link[base]{cut.default}.
@@ -53,10 +43,15 @@ instead of returning an \code{NA_integer} per \link[base]{.bincode}}
 }
 }
 \examples{
-morley$Speed |> cut_(breaks = 100*(8:9), data.name = 'speed') |> table()
-morley$Speed |> cut_(break_probs = c(.3, .6)) |> table()
+morley$Speed |> 
+ cut_(breaks = 100*(8:9), data.name = 'speed') |> 
+ table()
+morley$Speed |> 
+ cut_(probs = c(.3, .6)) |> 
+ table()
 
-VADeaths |> cut_(break_probs = c(.3, .6))
+VADeaths |> 
+ cut_(probs = c(.3, .6))
 
 JohnsonJohnson |> 
  zoo::as.Date.ts() |>
@@ -64,15 +59,5 @@ JohnsonJohnson |>
    data.name = 'JnJ') |>
  table()
 
-## Examples on Helper Function cut_levels()
-foo = function(...) cbind(
- cut.default(numeric(0), ...) |> levels(),
- cut_levels(...)
-)
-foo(breaks = 1:4, right = TRUE, include.lowest = TRUE)
-foo(breaks = 1:4, right = FALSE, include.lowest = TRUE)
-foo(breaks = 1:4, right = TRUE, include.lowest = FALSE)
-foo(breaks = 1:4, right = FALSE, include.lowest = FALSE)
-set.seed(29); foo(breaks = c(-Inf, sort(rnorm(1:3)), Inf))
 }
 \keyword{internal}

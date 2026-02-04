@@ -10,20 +10,15 @@
 #' @param breaks \link[base]{vector} of the same \link[base]{class} as `x`. 
 #' `-Inf` and `Inf` will be automatically added
 #' 
-#' @param break_probs \link[base]{double} \link[base]{vector} from 0 to 1,
+#' @param probs \link[base]{double} \link[base]{vector} from 0 to 1,
 #' probabilities to specify the \link[stats]{quantile}s to be used as `breaks`
-#' 
-#' @param right \link[base]{logical} scalar, default `TRUE`, 
-#' see functions \link[base]{cut.default} and \link[base]{.bincode}.
-#' 
-#' @param include.lowest \link[base]{logical} scalar, default `TRUE`, 
-#' see functions \link[base]{cut.default} and \link[base]{.bincode}.
 #' 
 #' @param data.name \link[base]{character} scalar, name of data.
 #' R \link[base]{language} is also accepted.
 #' Default is the argument call of `x`
 #' 
-#' @param ... additional parameters, currently not in use
+#' @param ... additional parameters `right` and `include.lowest` of 
+#' functions \link[base]{cut.default} and \link[base]{.bincode}.
 #' 
 #' @details 
 #' 
@@ -36,13 +31,16 @@
 #' \item {More user-friendly \link[base]{factor} \link[base]{levels}, see helper function [cut_levels]}
 #' }
 #' 
-#' 
-#' 
 #' @examples 
-#' morley$Speed |> cut_(breaks = 100*(8:9), data.name = 'speed') |> table()
-#' morley$Speed |> cut_(break_probs = c(.3, .6)) |> table()
+#' morley$Speed |> 
+#'  cut_(breaks = 100*(8:9), data.name = 'speed') |> 
+#'  table()
+#' morley$Speed |> 
+#'  cut_(probs = c(.3, .6)) |> 
+#'  table()
 #' 
-#' VADeaths |> cut_(break_probs = c(.3, .6))
+#' VADeaths |> 
+#'  cut_(probs = c(.3, .6))
 #' 
 #' JohnsonJohnson |> 
 #'  zoo::as.Date.ts() |>
@@ -56,10 +54,8 @@
 #' @export
 cut_ <- function(
     x, 
-    breaks = quantile(x, probs = break_probs, na.rm = TRUE), 
-    break_probs,
-    right = TRUE,
-    include.lowest = TRUE,
+    breaks = quantile(x, probs = probs, na.rm = TRUE), 
+    probs,
     data.name = substitute(x),
     ...
 ) {
@@ -77,10 +73,10 @@ cut_ <- function(
   
   ret <- x
   storage.mode(ret) <- 'integer'
-  ret[] <- .bincode(x, breaks = breaks, right = right, include.lowest = include.lowest) # 'integer'
+  ret[] <- .bincode(x, breaks = breaks, ...) # 'integer'
   # keeps `attributes(x)`
   
-  attr(ret, which = 'levels') <- cut_levels(breaks = breaks, right = right, include.lowest = include.lowest, data.name = data.name)
+  attr(ret, which = 'levels') <- cut_levels(breaks = breaks, ..., data.name = data.name)
   class(ret) <- 'factor'
   return(ret)
 
@@ -91,18 +87,35 @@ cut_ <- function(
 
 
 
-#' @rdname cut_
+#' @title [cut_levels()]
+#' 
+#' @param breaks \link[base]{vector} of the same \link[base]{class} as `x`. 
+#' `-Inf` and `Inf` will be automatically added
+#' 
+#' @param right \link[base]{logical} scalar, default `TRUE`, 
+#' see functions \link[base]{cut.default} and \link[base]{.bincode}.
+#' 
+#' @param include.lowest \link[base]{logical} scalar, default `TRUE`, 
+#' see functions \link[base]{cut.default} and \link[base]{.bincode}.
+#' 
+#' @param data.name \link[base]{character} scalar, name of data.
+#' R \link[base]{language} is also accepted.
+#' Default is the argument call of `x`
+#' 
 #' @examples 
 #' ## Examples on Helper Function cut_levels()
-#' foo = function(...) cbind(
-#'  cut.default(numeric(0), ...) |> levels(),
-#'  cut_levels(...)
-#' )
+#' foo = \(...) {
+#'  cbind(
+#'   numeric(0) |> cut.default(...) |> levels(),
+#'   cut_levels(...)
+#'  )
+#' }
 #' foo(breaks = 1:4, right = TRUE, include.lowest = TRUE)
 #' foo(breaks = 1:4, right = FALSE, include.lowest = TRUE)
 #' foo(breaks = 1:4, right = TRUE, include.lowest = FALSE)
 #' foo(breaks = 1:4, right = FALSE, include.lowest = FALSE)
 #' set.seed(29); foo(breaks = c(-Inf, sort(rnorm(1:3)), Inf))
+#' @keywords internal
 #' @export
 cut_levels <- function(
     breaks, 
@@ -110,6 +123,7 @@ cut_levels <- function(
     include.lowest = TRUE, 
     data.name = 'x'
 ) {
+  
   if (is.language(data.name)) data.name <- deparse1(data.name)
   if (!is.character(data.name) || length(data.name) != 1L || is.na(data.name) || !nzchar(data.name)) stop('illegal `data.name`')
   nb <- length(breaks)
@@ -147,6 +161,7 @@ cut_levels <- function(
   }
   
   paste0(L, data.name, R)
+  
 }
 
 
