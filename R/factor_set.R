@@ -9,10 +9,10 @@
 #' 
 #' @param plus \link[base]{integer} scalar, 
 #' value to be added to `x`, default `0L`. 
-#' If the dummy coding starts from 0 (instead of from 1), then use `plus = 1L`
+#' If the dummy coding starts from `0L` (instead of from `1L`), then use `plus = 1L`
 #' 
 #' @param ordered \link[base]{logical} scalar, should the returned \link[base]{factor} be 
-#' \link[base]{ordered} (`TRUE`) or unordered (`FALSE`, default)
+#' \link[base]{ordered} (`TRUE`) or un-ordered (`FALSE`, default)
 #' 
 #' @param value \link[base]{character} \link[base]{vector},
 #' \link[base]{levels} of output \link[base]{factor}
@@ -23,11 +23,11 @@
 #' Syntactic sugar [ordered<-] returns an \link[base]{ordered} \link[base]{factor}.
 #' 
 #' @examples
-#' (x1 = x2 = sample.int(n = 5L, size = 20, replace = TRUE))
+#' set.seed(22); (x1 = x2 = sample.int(n = 5L, size = 20, replace = TRUE))
 #' factor(x1) = letters[1:5]; x1
 #' ordered(x2) = LETTERS[1:5]; x2
 #' 
-#' set.seed(141); (x10 = x20 = sample.int(n = 5L, size = 20, replace = TRUE) - 1L)
+#' set.seed(14); (x10 = x20 = sample.int(n = 5L, size = 20, replace = TRUE) - 1L)
 #' factor(x10, plus = 1L) = letters[1:5]; x10
 #' ordered(x20, plus = 1L) = LETTERS[1:5]; x20
 #' 
@@ -40,11 +40,7 @@
 #' factor(x) = c('a', 'b', NA_character_, 'c')
 #' x # missing level converted to missing entry
 #' 
-#' x = 1:4
-#' ordered(x) = c('a', 'b', NA_character_, 'c')
-#' x # correctly ordered
-#' 
-#' (x = array(sample.int(4, size = 20, replace = TRUE), dim = c(4,5)))
+#' set.seed(32); (x = array(sample.int(4, size = 20, replace = TRUE), dim = c(4,5)))
 #' factor(x) = letters[1:4]
 #' x # respects other attributes
 #' @keywords internal
@@ -72,13 +68,18 @@
   attr(x, which = 'levels') <- value
   class(x) <- c(if (ordered) 'ordered', 'factor')
   
-  ret <- factor(x) # drop duplicated levels
+  ret <- factor(x) 
+  # ?base::factor
+  # .. drop duplicated levels
+  # .. but also removes 'unnecessary' attributes
   atr <- attributes(x)
-  atr$levels <- atr$class <- NULL # levels being processed
+  atr$levels <- atr$class <- NULL # have been processed by ?base::factor
   attributes(ret)[names(atr)] <- atr
   return(ret)
     
 }
+
+
 
 #' @rdname factor-set
 #' @export

@@ -1,0 +1,48 @@
+
+#' @title \link[base]{max} and \link[base]{min} of \link[base]{factor}
+#' 
+#' @description
+#' ..
+#' 
+#' @param x a \link[base]{factor} object
+#' 
+#' @param ... currently not used!!
+#' 
+#' @param na.rm \link[base]{logical} scalar
+#' 
+#' @returns 
+#' Function [Summary.factor()] 
+#' overwrites function \link[base]{Summary.factor} and 
+#' returns a \link[base]{factor}.
+#' 
+#' @examples
+#' (x = c(NA_integer_, sample.int(3L, size = 10L, replace = TRUE)) |>
+#'  structure(levels = letters[1:3], class = 'factor'))
+#' max(x, na.rm = FALSE)
+#' max(x, na.rm = TRUE)
+#' min(x, na.rm = TRUE)
+#' 
+#' (x0 = rep(NA_integer_, times = 20L) |>
+#'  structure(levels = letters[1:3], class = 'factor'))
+#' max(x0)
+#' min(x0)
+#' @keywords internal
+#' @export Summary.factor
+#' @export
+Summary.factor <- function(x, ..., na.rm = FALSE) {
+  
+  lv <- attr(x, which = 'levels', exact = TRUE)
+  x0 <- unclass(x)
+  
+  ret <- if (all(is.na(x0))) {
+    # no matter `na.rm` or not
+    NA_integer_
+  } else min(x0, na.rm = na.rm)
+  
+  return(structure(ret, levels = lv, class = class(x))) # (ordered) factor
+  
+}
+
+
+
+
