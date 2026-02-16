@@ -54,7 +54,7 @@ datasets::morley$Speed |>
  table()
 
 datasets::VADeaths |> 
- cut_(probs = c(.3, .6), data.name = 'death', fmt = '\%.3g\u2030')
+ cut_(probs = c(.3, .6), data.name = '\U1F480', fmt = '\%.3g\u2030')
 
 datasets::JohnsonJohnson |> 
  zoo::as.Date.ts() |>

@@ -42,7 +42,7 @@
 #'  table()
 #' 
 #' datasets::VADeaths |> 
-#'  cut_(probs = c(.3, .6), data.name = 'death', fmt = '%.3g\u2030')
+#'  cut_(probs = c(.3, .6), data.name = '\U1F480', fmt = '%.3g\u2030')
 #' 
 #' datasets::JohnsonJohnson |> 
 #'  zoo::as.Date.ts() |>
@@ -121,7 +121,7 @@ cut_levels <- function(
   if (!is.character(data.name) || length(data.name) != 1L || is.na(data.name) || !nzchar(data.name)) stop('illegal `data.name`')
   nb <- length(breaks)
   
-  b <- trimws(if (inherits(breaks, what = 'Date')) {
+  b <- if (inherits(breaks, what = 'Date')) {
     breaks |> 
       format() # use S3
   } else if (is.integer(breaks)) {
@@ -130,7 +130,8 @@ cut_levels <- function(
   } else if (is.double(breaks)) {
     breaks |> 
       sprintf(fmt = fmt)
-  })
+  }
+  # trimws() # no need to do this..
   b1 <- b[1:(nb-1L)]
   b2 <- b[2:nb]
   
@@ -143,15 +144,21 @@ cut_levels <- function(
     r2 <- if (!include.lowest) '<' else c(rep('<', times = nb - 2L), '\u2264') 
   }
   
-  L <- (-Inf) |> 
-    sprintf(fmt = fmt) |>
-    paste0('^', . = _, c('\u2264', '<'), collapse = '|') |>
-    gsub(pattern = _, replacement = '', x = paste0(b1, r1)) 
-  R <- Inf |> 
-    sprintf(fmt = fmt) |>
-    paste0(c('\u2264', '<'), . = _, '$', collapse = '|') |>
-    gsub(pattern = _, replacement = '', x = paste0(r2, b2)) 
-
+  L <- paste0(b1, r1)
+  R <- paste0(r2, b2)
+  
+  if (is.double(breaks)) {
+    # stopifnot(is.double(Inf))
+    L <- (-Inf) |> 
+      sprintf(fmt = fmt) |>
+      paste0('^', . = _, c('\u2264', '<'), collapse = '|') |>
+      gsub(pattern = _, replacement = '', x = L) 
+    R <- Inf |> 
+      sprintf(fmt = fmt) |>
+      paste0(c('\u2264', '<'), . = _, '$', collapse = '|') |>
+      gsub(pattern = _, replacement = '', x = R) 
+  }
+  
   if (!nzchar(R[nr <- length(R)])) {
     # change last category from `a<X` or `a<=X` to `X>a` and `X>=a`
     L[nr] <- ''
