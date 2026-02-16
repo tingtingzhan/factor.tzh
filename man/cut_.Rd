@@ -9,6 +9,7 @@ cut_(
   breaks = quantile(x, probs = probs, na.rm = TRUE),
   probs,
   data.name = substitute(x),
+  fmt = "\%.3g",
   ...
 )
 }
@@ -26,6 +27,8 @@ probabilities to specify the \link[stats]{quantile}s to be used as \code{breaks}
 R \link[base]{language} is also accepted.
 Default is the argument call of \code{x}}
 
+\item{fmt}{see functions \code{\link[=cut_levels]{cut_levels()}} and \link[base]{sprintf}}
+
 \item{...}{additional parameters \code{right} and \code{include.lowest} of
 functions \link[base]{cut.default} and \link[base]{.bincode}.}
 }
@@ -39,21 +42,21 @@ Function \code{\link[=cut_]{cut_()}} is different from function \link[base]{cut.
 \item {\code{-Inf} and \code{Inf} are added to \code{breaks},
 so that the values outside of \code{breaks} will be correctly categorized,
 instead of returning an \code{NA_integer} per \link[base]{.bincode}}
-\item {More user-friendly \link[base]{factor} \link[base]{levels}, see helper function \link{cut_levels}}
+\item {More user-friendly \link[base]{factor} \link[base]{levels}, see helper function \code{\link[=cut_levels]{cut_levels()}}}
 }
 }
 \examples{
-morley$Speed |> 
+datasets::morley$Speed |> 
  cut_(breaks = 100*(8:9), data.name = 'speed') |> 
  table()
-morley$Speed |> 
+datasets::morley$Speed |> 
  cut_(probs = c(.3, .6)) |> 
  table()
 
-VADeaths |> 
- cut_(probs = c(.3, .6))
+datasets::VADeaths |> 
+ cut_(probs = c(.3, .6), data.name = 'death', fmt = '\%.3g\u2030')
 
-JohnsonJohnson |> 
+datasets::JohnsonJohnson |> 
  zoo::as.Date.ts() |>
  cut_(breaks = as.Date(c('1970-01-01', '1975-01-01')), 
    data.name = 'JnJ') |>

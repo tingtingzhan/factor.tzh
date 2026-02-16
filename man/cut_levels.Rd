@@ -4,37 +4,34 @@
 \alias{cut_levels}
 \title{\code{\link[=cut_levels]{cut_levels()}}}
 \usage{
-cut_levels(breaks, right = TRUE, include.lowest = TRUE, data.name = "x")
+cut_levels(
+  breaks,
+  right = TRUE,
+  include.lowest = TRUE,
+  fmt = "\%.3g",
+  data.name = "x"
+)
 }
 \arguments{
-\item{breaks}{\link[base]{vector} of the same \link[base]{class} as \code{x}.
-\code{-Inf} and \code{Inf} will be automatically added}
+\item{breaks, right, include.lowest}{see functions \link[base]{cut.default} and \link[base]{.bincode}.}
 
-\item{right}{\link[base]{logical} scalar, default \code{TRUE},
-see functions \link[base]{cut.default} and \link[base]{.bincode}.}
+\item{fmt}{see function \link[base]{sprintf}}
 
-\item{include.lowest}{\link[base]{logical} scalar, default \code{TRUE},
-see functions \link[base]{cut.default} and \link[base]{.bincode}.}
-
-\item{data.name}{\link[base]{character} scalar, name of data.
-R \link[base]{language} is also accepted.
-Default is the argument call of \code{x}}
+\item{data.name}{\link[base]{character} scalar or \link[base]{language}, see function \code{\link[=cut_]{cut_()}}}
 }
 \description{
 \code{\link[=cut_levels]{cut_levels()}}
 }
 \examples{
-## Examples on Helper Function cut_levels()
 foo = \(...) {
  cbind(
   numeric(0) |> cut.default(...) |> levels(),
   cut_levels(...)
  )
 }
-foo(breaks = 1:4, right = TRUE, include.lowest = TRUE)
-foo(breaks = 1:4, right = FALSE, include.lowest = TRUE)
-foo(breaks = 1:4, right = TRUE, include.lowest = FALSE)
-foo(breaks = 1:4, right = FALSE, include.lowest = FALSE)
-set.seed(29); foo(breaks = c(-Inf, sort(rnorm(1:3)), Inf))
+foo(breaks = c(-Inf, 1:4, Inf), right = TRUE, include.lowest = TRUE)
+foo(breaks = c(-Inf, 1:4, Inf), right = FALSE, include.lowest = TRUE)
+foo(breaks = c(-Inf, 1:4, Inf), right = TRUE, include.lowest = FALSE)
+foo(breaks = c(-Inf, 1:4, Inf), right = FALSE, include.lowest = FALSE)
 }
 \keyword{internal}
