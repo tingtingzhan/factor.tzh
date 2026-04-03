@@ -36,7 +36,6 @@
 #' @keywords internal
 #' @importFrom dplyr recode_values
 #' @export
-#case_match_factor 
 recode2factor <- function(
     x, ..., default = NULL, ptype = NULL,
     envir = parent.frame()
