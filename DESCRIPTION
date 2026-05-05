@@ -10,7 +10,7 @@ Authors@R: c(person(given = "Tingting", family =
       c("tingtingzhan@gmail.com"), comment = c(ORCID =
       '0000-0001-9971-4844')))
 Language: en-US
-Depends: R (>= 4.5.0)
+Depends: R (>= 4.6.0)
 Imports: dplyr (== 1.2.1)
 Suggests: rlang (== 1.2.0), zoo (== 1.8.15)
 Config/roxygen2/version: 8.0.0
